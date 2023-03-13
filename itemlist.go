@@ -33,6 +33,17 @@ func (i *ItemList) AddColumn(name string, t glib.Type) {
 	i.store = listStore
 }
 
+// AddColumn adds a column to the table with custom renderer
+func (i *ItemList) AddColumnWithRenderer(name string, t glib.Type,   r gtk.CellRendererer) {
+	i.ctypes = append(i.ctypes, t)
+	i.cnames = append(i.cnames, name)
+
+	i.AppendColumn(createColumnWithRenderer(name, len(i.cnames)-1, r))
+	listStore := gtk.NewListStore(i.ctypes)
+	i.SetModel(listStore)
+	i.store = listStore
+}
+
 // Add adds a new item to the list.
 func (i *ItemList) Add(items ...any) {
 	if len(items) > len(i.cnames) {
@@ -60,6 +71,32 @@ func createColumn(title string, id int) *gtk.TreeViewColumn {
 
 	column.PackEnd(cellRenderer, false)
 	column.AddAttribute(cellRenderer, "text", int(id))
+	column.SetResizable(true)
+
+	return column
+}
+
+func createColumnWithRenderer(title string, id int, cellRenderer gtk.CellRendererer) *gtk.TreeViewColumn {
+	column := gtk.NewTreeViewColumn()
+	column.SetTitle(title)
+
+	column.PackEnd(cellRenderer, false)
+	if _, ok := cellRenderer.(*gtk.CellRendererProgress); ok {
+		column.AddAttribute(cellRenderer, "value", int(id))
+	}
+	if _, ok := cellRenderer.(*gtk.CellRendererText); ok {
+		column.AddAttribute(cellRenderer, "text", int(id))
+	}
+	if _, ok := cellRenderer.(*gtk.CellRendererPixbuf); ok {
+		column.AddAttribute(cellRenderer, "pixbuf", int(id))
+	}
+	if _, ok := cellRenderer.(*gtk.CellRendererToggle); ok {
+		column.AddAttribute(cellRenderer, "active", int(id))
+	}
+	if _, ok := cellRenderer.(*gtk.CellRendererCombo); ok {
+		column.AddAttribute(cellRenderer, "text", int(id))
+	}
+
 	column.SetResizable(true)
 
 	return column

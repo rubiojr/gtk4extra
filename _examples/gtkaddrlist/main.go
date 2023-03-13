@@ -33,13 +33,29 @@ func activate(app *gtk.Application) {
 	list.AddColumn("Name", glib.TypeString)
 	list.AddColumn("IPAddr", glib.TypeString)
 
+	renderer := gtk.NewCellRendererProgress()
+	list.AddColumnWithRenderer("Progress", glib.TypeUint64, renderer)
+
+	toggle := gtk.NewCellRendererToggle()
+	toggle.SetActivatable(true)
+	list.AddColumnWithRenderer("Toggle", glib.TypeBoolean, toggle)
+
+	combo := gtk.NewCellRendererCombo()
+	listStore := gtk.NewListStore([]glib.Type{glib.TypeString})
+	listStore.Set(listStore.Append(), []int{0}, []glib.Value{*glib.NewValue("foobar")})
+	combo.SetObjectProperty("model", listStore)
+	combo.SetObjectProperty("text-column", 0)
+	combo.SetObjectProperty("editable", true)
+	combo.SetObjectProperty("has-entry", false)
+	list.AddColumnWithRenderer("Select", glib.TypeString, combo)
+
 	l, err := addrList()
 	if err != nil {
 		panic(err)
 	}
 
 	for k, v := range l {
-		list.Add(k, v)
+		list.Add(k, v, 50, false)
 	}
 
 	win.Show()
