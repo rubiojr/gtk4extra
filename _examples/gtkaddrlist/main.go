@@ -38,8 +38,8 @@ func activate(app *gtk.Application) {
 		panic(err)
 	}
 
-	for k, _ := range l {
-		list.Add(k)
+	for k, v := range l {
+		list.Add(k, v)
 	}
 
 	win.Show()
