@@ -4,6 +4,8 @@
 
 A list of items in a tabular fashion.
 
+![](docs/images/simplelist.png)
+
 ```Go
 package main
 
