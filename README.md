@@ -37,7 +37,7 @@ func activate(app *gtk.Application) {
 	list.AddColumn("Name", glib.TypeString)
 	list.AddColumn("Description", glib.TypeString)
   
-  list.Add("foobar", "this is a foobar")
+	list.Add("foobar", "this is a foobar")
 
 	win.Show()
 }
